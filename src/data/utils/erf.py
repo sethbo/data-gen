@@ -2,6 +2,9 @@
 Created on Apr. 16, 2020
 
 @author: scott
+
+Java Source: https://github.com/haifengl/smile/blob/master/math/src/main/java/smile/math/special/Erf.java
+
 '''
 
 from math import log, sqrt

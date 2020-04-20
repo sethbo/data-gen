@@ -5,30 +5,25 @@ Created on Apr. 15, 2020
 
 @author: scott
 '''
+import lorem
 
-from math import exp, sqrt
-from data.utils.erf import erf_inverse
 from data.distributions.LogNormal import LogNormal
 
-num_notes = 1000
-num_characters = 100000
-logn_mean = 6
-logn_stdev = 1
-
-'''
-From normalized value generate length of text from quantile function of log-normal distribution
-Make text with Lorem ipsum generator
-'''
-
-d = LogNormal(num_notes, num_characters, logn_stdev)
-total_length = 0
-
-for text_len in d.getQuantileValues():
-    # Normalize an index into values for each note where 0 < v_i < 1
-    #norm_index = (2 * index + 1) / (2 * num_notes)
-    #dist_value = d.calculateQuantileFunction(norm_index)
-    total_length += text_len
-    #text_length = exp(dist_value)
-    #print("\tindex\t%d\tnidx\t%f\tvalue\t%f" %(index, norm_index, dist_value))
-print("total %f" %(total_length))
-
+class TextSeries(object):
+    def __init__(self, num_notes, num_characters, logn_variance):
+        self.num_notes = num_notes
+        self.num_characters = num_characters
+        self.logn_variance = logn_variance
+        self.distribution = LogNormal(num_notes, num_characters, logn_variance)
+        self.distribution_values = self.distribution.get_distribution_values()
+        self.total_length = 0
+        self.index = 0
+    
+    def text_generator(self):
+        while self.index < self.num_notes:
+            text = lorem.text()
+            text_len = self.distribution_values[self.index]
+            while (len(text) < text_len): 
+                text = text + " " + lorem.text()
+            yield text[0:text_len]
+            self.index += 1
