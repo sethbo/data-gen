@@ -3,12 +3,13 @@ Created on Apr. 16, 2020
 
 @author: scott
 
-Java Source: https://github.com/haifengl/smile/blob/master/math/src/main/java/smile/math/special/Erf.java
-
 '''
 
-from math import log, sqrt
+from math import log, sqrt, exp, lgamma
 
+'''
+Java Source: https://github.com/haifengl/smile/blob/master/math/src/main/java/smile/math/special/Erf.java
+'''
 def erf_inverse(value):
     adjusted_value = (1.0 - value) * (1.0 + value)
     if adjusted_value > 0:
@@ -82,3 +83,12 @@ def erf_inverse(value):
     else:
         raise ArithmeticError('value is not in range or too close to one')
     return p * value
+
+'''
+the approximate value of the Beta function for the two specified values
+'''
+def beta(a, b):
+    gammaLnA = lgamma(a)
+    gammaLnB = lgamma(b)
+    gammaLnAB = lgamma(a + b)
+    return exp (gammaLnA + gammaLnB + (-gammaLnAB))

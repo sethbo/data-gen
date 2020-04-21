@@ -5,8 +5,10 @@ Created on Apr. 16, 2020
 '''
 
 import unittest
-from data.utils.erf import erf_inverse
+from math import pi
+from data.distributions.utils import erf_inverse, beta
 from data.distributions.LogNormal import LogNormal
+from data.distributions.Burr import Burr
 from DataGenerator import TextSeries
 
 class Test(unittest.TestCase):
@@ -29,6 +31,15 @@ class Test(unittest.TestCase):
         with self.assertRaises(ArithmeticError): 
             erf_inverse(0.999999999999999999)
 
+    def testBeta(self):
+        self.assertAlmostEqual(1, beta(1, 1), 16)
+        self.assertAlmostEqual(0.5, beta(2, 1), 15)
+        self.assertAlmostEqual(0.5, beta(1, 2), 15)
+        self.assertAlmostEqual(0, beta(10, 20), 8)
+        self.assertAlmostEqual(0, beta(20, 10), 8)
+        self.assertAlmostEqual((pi / 2), beta(1.5, .5), 15)
+        self.assertAlmostEqual(1.2091997296, beta(0.6666667, 1.333333), 10)
+        
     '''
     test Log-normal distribution
     '''
@@ -86,6 +97,41 @@ class Test(unittest.TestCase):
         quantile_values = dist.get_distribution_values()
         self.assertEqual(10000, len(quantile_values))
         self.assertEqual(1000000, sum(quantile_values))
+
+    def testBurr(self):
+        dist = Burr(10, 20, 3, 1)
+        self.assertAlmostEqual(2, dist.getMean(), 10)
+        quantile_values = dist.get_distribution_values()
+        self.assertEqual(10, len(quantile_values))
+        self.assertEqual(20, sum(quantile_values))
+        
+        dist = Burr(100, 1000, 2, 2)
+        self.assertAlmostEqual(10, dist.getMean(), 10)
+        quantile_values = dist.get_distribution_values()
+        self.assertEqual(100, len(quantile_values))
+        self.assertEqual(1000, sum(quantile_values))
+
+        dist = Burr(1000, 500, 5, 2)
+        self.assertAlmostEqual(0.5, dist.getMean(), 10)
+        quantile_values = dist.get_distribution_values()
+        self.assertEqual(1000, len(quantile_values))
+        self.assertEqual(500, sum(quantile_values))
+
+    '''
+    test distribtion rows
+    '''
+    def testDistributionRows(self):
+        dist = LogNormal(10, 20, 1)
+        self.assertEqual(
+            [[7, 1], [4, 1], [3, 1], [2, 1], [1, 4], [0, 2]],
+            dist.get_distribution_rows()
+        )
+
+        dist = Burr(10, 20, 3, 1)
+        self.assertEqual(
+            [[5, 1], [3, 1], [2, 4], [1, 4]],
+            dist.get_distribution_rows()
+        )
 
     '''
     test text series generation

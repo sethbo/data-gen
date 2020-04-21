@@ -8,6 +8,7 @@ Created on Apr. 15, 2020
 import lorem
 
 from data.distributions.LogNormal import LogNormal
+from data.distributions.Burr import Burr
 
 class TextSeries(object):
     def __init__(self, num_notes, num_characters, logn_variance):
@@ -27,3 +28,8 @@ class TextSeries(object):
                 text = text + " " + lorem.text()
             yield text[0:text_len]
             self.index += 1
+
+dist = Burr(100, 200, 3, 1)
+rows = dist.get_distribution_rows()
+print(list(rows))
+print(dist.getMean())

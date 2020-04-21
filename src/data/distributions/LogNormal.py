@@ -3,11 +3,11 @@ Created on Apr. 16, 2020
 
 @author: scott
 
-Log-normal distribution with quantile function to generate values for data generation
+Log-normal distribution for data generation
 
 '''
 from math import exp, sqrt, log
-from data.utils.erf import erf_inverse
+from data.distributions.utils import erf_inverse
 from data.distributions.Distribution import Distribution
 
 class LogNormal(Distribution):
@@ -21,7 +21,7 @@ class LogNormal(Distribution):
         
         quantity - the number or quantity of relationships
         relationshipCount - the total number of relationships
-        variance - the vairance of the log-normal distribution
+        variance - the variance of the log-normal distribution
         '''
         Distribution.__init__(self, quantity, relationshipCount)
         self.mean = log(relationshipCount / quantity) - variance / 2
